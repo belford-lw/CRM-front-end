@@ -4,6 +4,7 @@ import { LoginPage } from '../../features/auth/pages/loginPage';
 import MainLayout from '../../components/layout/MainLayout';
 import { DashboardPage } from '../../features/dashboard/pages/DashboardPage';
 import { ProfilePage } from '../../features/profiles/pages/ProfilePage';
+import { ManagersPage } from '../../features/manager/pages/ManagersPage';
 
 
 export const router = createBrowserRouter([
@@ -34,6 +35,13 @@ export const router = createBrowserRouter([
           {
             path: 'profile',
             element: <ProfilePage />,
+          },
+
+          {
+            element: <RoleGuard allowedRoles={['ADMIN']}/>,
+            children: [
+              {path: 'managers', element: <ManagersPage/>}
+            ]
           },
           
           // ================= FAQAT ADMIN VA MANAGER KIRADIGAN JOYLAR =================

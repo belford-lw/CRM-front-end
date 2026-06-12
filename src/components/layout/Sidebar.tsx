@@ -11,11 +11,12 @@ interface NavigationItem {
 
 const navigationMenu: NavigationItem[] = [
   { name: 'Asosiy Dashboard', path: '/dashboard', allowedRoles: ['ADMIN', 'MANAGER', 'TEACHER', 'STUDENT'] },
+  { name: 'Manager', path: '/managers', allowedRoles: ['ADMIN', 'MANAGER'] }, 
   { name: 'Guruhlar', path: '/groups', allowedRoles: ['ADMIN', 'MANAGER'] },
-  { name: 'O‘quvchilar', path: '/students', allowedRoles: ['ADMIN', 'MANAGER'] },
-  { name: 'O‘qituvchilar', path: '/teachers', allowedRoles: ['ADMIN', 'MANAGER'] },
+  { name: 'O`quvchilar', path: '/students', allowedRoles: ['ADMIN', 'MANAGER'] },
+  { name: 'O`qituvchilar', path: '/teachers', allowedRoles: ['ADMIN', 'MANAGER'] },
   { name: 'Davomat', path: '/attendance', allowedRoles: ['TEACHER'] },
-  { name: 'Moliya Bo‘limi', path: '/finance', allowedRoles: ['ADMIN', 'MANAGER'] },
+  { name: 'Moliya Bo`limi', path: '/finance', allowedRoles: ['ADMIN', 'MANAGER'] },
   { name: 'Mening Profilim', path: '/profile', allowedRoles: ['ADMIN', 'MANAGER', 'TEACHER', 'STUDENT'] },
 ];
 
@@ -32,7 +33,7 @@ export const Sidebar = () => {
   return (
     <aside className="w-64 bg-card border-r border-border h-screen sticky top-0 flex flex-col">
       <div className="h-16 flex items-center px-6 border-b border-border">
-        <span className="text-xl font-bold text-primary tracking-wider">SILICON CRM</span>
+        <span className="text-xl font-bold text-primary tracking-wider">Yuldoshev CRM</span>
       </div>
       
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
