@@ -5,6 +5,7 @@ import MainLayout from '../../components/layout/MainLayout';
 import { DashboardPage } from '../../features/dashboard/pages/DashboardPage';
 import { ProfilePage } from '../../features/profiles/pages/ProfilePage';
 import { ManagersPage } from '../../features/manager/pages/ManagersPage';
+import { StudentsPage } from '../../features/students/pages/StudentsPage';
 
 
 export const router = createBrowserRouter([
@@ -49,7 +50,7 @@ export const router = createBrowserRouter([
             element: <RoleGuard allowedRoles={['ADMIN', 'MANAGER']} />,
             children: [
               { path: 'groups', element: <div className="p-6 text-text-main">Guruhlar sahifasi</div> },
-              { path: 'students', element: <div className="p-6 text-text-main">O'quvchilar sahifasi</div> },
+              { path: 'students', element: <StudentsPage/> },
               { path: 'teachers', element: <div className="p-6 text-text-main">O'qituvchilar sahifasi</div> },
               { path: 'finance', element: <div className="p-6 text-text-main">Moliya sahifasi</div> },
             ],
