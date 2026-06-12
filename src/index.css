@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Biz loyihada ishlatgan barcha maxsus nomli ranglarni v4 tizimiga tanitamiz */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+}
+
+/* 2. LIGHT MODE (DEFAULT) GLOBAL O'ZGARUVCHILARI */
+:root {
+  --primary: #3b82f6;          /* Moviy rang */
+  --primary-hover: #2563eb;
+  --background: #f8fafc;       /* Och kulrang fon */
+  --card: #ffffff;             /* Oq karta foni */
+  --border: #e2e8f0;           /* Och chegara chizig'i */
+  --text-main: #0f172a;        /* To'q matn */
+  --text-muted: #64748b;       /* Soniq matn */
+}
+
+/* 3. DARK MODE GLOBAL O'ZGARUVCHILARI */
+.dark {
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --background: #0f172a;       /* To'q ko'k/qora fon */
+  --card: #1e293b;             /* Sal ochroq karta foni */
+  --border: #334155;           /* To'q rejim chegarasi */
+  --text-main: #f8fafc;        /* Oqish matn */
+  --text-muted: #94a3b8;       /* Kulrang matn */
+}
