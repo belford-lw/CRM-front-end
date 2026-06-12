@@ -26,7 +26,7 @@ export const Header = () => {
           className="p-2 rounded-lg bg-background border border-border text-text-main hover:bg-card transition-colors text-sm font-medium"
           aria-label="Toggle theme"
         >
-          {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
         </button>
 
         {/* Tizimdan Chiqish */}
