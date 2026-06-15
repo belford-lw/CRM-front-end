@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { AxiosError } from 'axios';
 import { useAuthStore } from '../../../store/authStore';
 import { useState, type FormEvent } from 'react';
@@ -100,30 +99,41 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 transition-colors duration-200">
-      <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl p-8 transition-colors duration-200">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 antialiased bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-[#0b132b]/75 before:backdrop-blur-sm"
+      style={{ 
+        // O'quv markaz va zamonaviy dars xonasini ifodalovchi premium orqa fon rasmi
+        backgroundImage: `url('https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1920&auto=format&fit=crop')` 
+      }}
+    >
+      
+      {/* Karta: Shaffof va Blur qilingan premium oynasimon Glassmorphism paneli */}
+      <div className="w-full max-w-md bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl p-8 relative z-10 transition-all duration-300">
         
-        {/* Brending va Sarlavha */}
+        {/* Brending va Sarlavha: Yo'ldoshev CRM */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-primary tracking-wider mb-2">
-            SILICON CRM
+          <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4cc9f0] to-[#4361ee] tracking-wide mb-2 uppercase drop-shadow-sm">
+            Yo'ldoshev CRM
           </h1>
-          <p className="text-text-muted text-sm">
-            Tizimga kirish uchun ma'lumotlaringizni kiriting
+          <p className="text-slate-300/80 text-xs font-medium">
+            O‘quv markazini boshqarish tizimiga kirish
           </p>
         </div>
 
-        {/* Xatolik panelini ko'rsatish */}
+        {/* Xatolik paneli: Shaffof va qizil tusli oyna */}
         {error && (
-          <div className="mb-5 p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-lg font-medium transition-all animate-pulse">
-            {error}
+          <div className="mb-6 p-3.5 bg-red-500/10 border border-red-500/20 text-red-300 text-xs rounded-xl font-medium flex items-start gap-2.5 animate-fadeIn backdrop-blur-md">
+            <span className="mt-0.5">⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
         {/* Kirish Formasi */}
         <form onSubmit={handleSubmit} className="space-y-5">
+          
+          {/* Telefon Input Bloki: To'liq shaffof oqish fon va blur */}
           <div>
-            <label className="block text-sm font-medium text-text-main mb-1.5" htmlFor="login-phone">
+            <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2" htmlFor="login-phone">
               Telefon raqam yoki Login
             </label>
             <input
@@ -133,13 +143,15 @@ export const LoginPage = () => {
               placeholder="+998 (90) 123-4567"
               value={phone}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              // bg-white/10 va backdrop-blur-md orqali oq fon ko'rinadigan shaffoflik berildi
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
               disabled={isLoading}
             />
           </div>
 
+          {/* Parol Input Bloki: To'liq shaffof oqish fon va blur */}
           <div>
-            <label className="block text-sm font-medium text-text-main mb-1.5" htmlFor="login-password">
+            <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2" htmlFor="login-password">
               Parol
             </label>
             <input
@@ -149,35 +161,36 @@ export const LoginPage = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              // bg-white/10 va backdrop-blur-md orqali oq fon ko'rinadigan shaffoflik berildi
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
               disabled={isLoading}
             />
           </div>
 
-          {/* Kirish Tugmasi va Yuklanish holati simulyatsiyasi */}
+          {/* Kirish Tugmasi */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full mt-2 py-3.5 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#4361ee]/20 hover:shadow-[#4cc9f0]/20 active:scale-[0.99] transition-all duration-300 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Tekshirilmoqda...
+                <span className="tracking-wide">Tekshirilmoqda...</span>
               </>
             ) : (
-              'Tizimga kirish'
+              <span className="tracking-wide cursor-pointer">Tizimga kirish</span>
             )}
           </button>
         </form>
 
         {/* Tizim Osti Matni */}
-        <div className="mt-8 text-center border-t border-border/60 pt-4">
-          <span className="text-xs text-text-muted font-medium tracking-wide">
-            Zarbdor Technical School © {new Date().getFullYear()}
+        <div className="mt-8 text-center border-t border-white/10 pt-4">
+          <span className="text-[10px] text-slate-300 font-semibold tracking-widest uppercase block">
+            Zarbdor Yo'ldoshev EduCenter © {new Date().getFullYear()}
           </span>
         </div>
 
