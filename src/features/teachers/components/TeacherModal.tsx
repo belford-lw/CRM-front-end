@@ -20,7 +20,7 @@ export interface TeacherFormState {
   monthlySalary: string;
   percentShare: string;
 }
-
+/// ergtht
 interface TeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
