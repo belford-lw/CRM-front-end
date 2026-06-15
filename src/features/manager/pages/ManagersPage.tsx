@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { managersApi, type Manager } from '../api/ManagersApi';
+import { managersApi, type ManagerListItem } from '../api/ManagersApi';
 
 export const ManagersPage = () => {
-  const [managers, setManagers] = useState<Manager[]>([]);
+  const [managers, setManagers] = useState<ManagerListItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,7 +18,7 @@ export const ManagersPage = () => {
 
   const fetchManagers = async () => {
     setIsLoading(true);
-    const data = await managersApi.getAll();
+    const data = await managersApi.list();
     setManagers(data);
     setIsLoading(false);
   };
@@ -58,7 +58,7 @@ export const ManagersPage = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Haqiqatdan ham ushbu managerni tizimdan oʻchirmoqchimisiz?')) {
-      await managersApi.delete(id);
+      await managersApi.remove(id);
       fetchManagers();
     }
   };

@@ -1,70 +1,54 @@
-import { apiClient } from "../../../api/apiClient";
+import { apiClient } from '../../../api/apiClient';
 
-// Backend list() qaytaradigan ma'lumotlar shakli
-export interface Manager {
+// Backenddan keladigan menejerlar ro'yxati elementi turi
+export interface ManagerListItem {
   id: string;
   firstName: string;
   lastName: string;
   phone: string;
   createdAt: string;
+  isActive: boolean;
 }
 
-// CreateManagerDto talab qiladigan maydonlar
+// Yangi menejer yaratish uchun payload
 export interface CreateManagerPayload {
   firstName: string;
   lastName: string;
   phone: string;
-  password: string;
-  monthlySalary: number;
+  password?: string;
   photoUrl?: string;
+  monthlySalary: number;
+}
+
+// Menejerni tahrirlash uchun payload (hamma maydonlar ixtiyoriy - @IsOptional)
+export interface UpdateManagerPayload {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  password?: string;
+  photoUrl?: string;
+  monthlySalary?: number;
 }
 
 export const managersApi = {
-  // GET /managers
-  getAll: async (): Promise<Manager[]> => {
-    try {
-      const response = await apiClient.get<Manager[]>('/managers');
-      return response.data;
-    } catch (error) {
-      console.warn('⚠️ [API] Backend offline. Vaqtinchalik bazadan oqilmoqda...');
-      const local = sessionStorage.getItem('crm_dynamic_users');
-      return local ? JSON.parse(local) : [];
-    }
+  // Ro'yxatni olish
+  list: async (): Promise<ManagerListItem[]> => {
+    const response = await apiClient.get<ManagerListItem[]>('/managers');
+    return response.data;
   },
 
-  // POST /managers
-  create: async (dto: CreateManagerPayload): Promise<any> => {
-    try {
-      const response = await apiClient.post('/managers', dto);
-      return response.data;
-    } catch (error) {
-      // Backend yo'q bo'lsa login ishlayverishi uchun sinov rejimida saqlash
-      const newMock: Manager = {
-        id: `user-id-${Date.now()}`,
-        firstName: dto.firstName,
-        lastName: dto.lastName,
-        phone: dto.phone,
-        createdAt: new Date().toISOString(),
-      };
-      
-      const local = sessionStorage.getItem('crm_dynamic_users');
-      const current = local ? JSON.parse(local) : [];
-      // Login tekshira olishi uchun parolni ham qo'shib saqlaymiz
-      sessionStorage.setItem('crm_dynamic_users', JSON.stringify([...current, { ...newMock, password: dto.password, role: 'MANAGER' }]));
-      return newMock;
-    }
+  // Yangi menejer qo'shish
+  create: async (payload: CreateManagerPayload): Promise<void> => {
+    await apiClient.post('/managers', payload);
   },
 
-  // DELETE /managers/:userId
-  delete: async (userId: string): Promise<void> => {
-    try {
-      await apiClient.delete(`/managers/${userId}`);
-    } catch (error) {
-      const local = sessionStorage.getItem('crm_dynamic_users');
-      if (local) {
-        const filtered = JSON.parse(local).filter((u: any) => u.id !== userId);
-        sessionStorage.setItem('crm_dynamic_users', JSON.stringify(filtered));
-      }
-    }
-  }
+  // MENEJERNI TAHRIRLASH (Yangi qo'shilgan qism)
+  update: async (userId: string, payload: UpdateManagerPayload): Promise<void> => {
+    await apiClient.patch(`/managers/${userId}`, payload);
+  },
+
+  // Tizimdan o'chirish
+  remove: async (userId: string): Promise<void> => {
+    await apiClient.delete(`/managers/${userId}`);
+  },
 };

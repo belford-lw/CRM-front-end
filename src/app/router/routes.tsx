@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { RoleGuard } from './RoleGuard';
 import { LoginPage } from '../../features/auth/pages/loginPage';
@@ -7,6 +8,8 @@ import { ProfilePage } from '../../features/profiles/pages/ProfilePage';
 import { ManagersPage } from '../../features/manager/pages/ManagersPage';
 import { StudentsPage } from '../../features/students/pages/StudentsPage';
 
+// YANGI QO'SHILGAN IMPORT: Loyihangiz arxitekturasiga mos yo'nalishda
+import TeachersPage from '../../features/teachers/pages/TeachersPage';
 
 export const router = createBrowserRouter([
   // 1. Ochiq sahifa (Faqat tizimga kirmaganlar uchun)
@@ -50,8 +53,16 @@ export const router = createBrowserRouter([
             element: <RoleGuard allowedRoles={['ADMIN', 'MANAGER']} />,
             children: [
               { path: 'groups', element: <div className="p-6 text-text-main">Guruhlar sahifasi</div> },
+<<<<<<< HEAD
               { path: 'students', element: <StudentsPage/> },
               { path: 'teachers', element: <div className="p-6 text-text-main">O'qituvchilar sahifasi</div> },
+=======
+              { path: 'students', element: <div className="p-6 text-text-main">O'quvchilar sahifasi</div> },
+              
+              // TUZATILGAN JOYI: Soxta div o'rniga haqiqiy sahifa komponenti ulandi
+              { path: 'teachers', element: <TeachersPage /> },
+              
+>>>>>>> b321bbe501a7f76ee02c84395c83b93e2741288e
               { path: 'finance', element: <div className="p-6 text-text-main">Moliya sahifasi</div> },
             ],
           },
