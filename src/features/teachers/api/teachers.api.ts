@@ -1,6 +1,4 @@
-// LOYIHANGIZDAGI ASOSIY apiClient'NI IMPORT QILAMIZ
-// (Yo'nalishni loyihangiz papkalar tuzilishiga qarab tekshirib oling, masalan: '../../../api/apiClient')
-import { apiClient } from '../../../api/apiClient';
+import { apiClient } from "../../../api/apiClient";
 
 export const teachersApi = {
   // Alohida API yaratmasdan, tayyor apiClient'dan foydalanamiz
