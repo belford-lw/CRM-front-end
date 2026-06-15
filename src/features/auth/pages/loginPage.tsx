@@ -100,7 +100,9 @@ export const LoginPage = () => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 antialiased bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-[#0b132b]/75 before:backdrop-blur-sm"
+      // O'zgarish: before:backdrop-blur-sm butkul olib tashlandi (rasm tiniq bo'lishi uchun)
+      // O'zgarish: before:bg-[#0b132b]/80 yordamida rasmning yorqinligi pasaytirildi (qorong'uroq qilindi)
+      className="min-h-screen flex items-center justify-center p-4 antialiased bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-[#0b132b]/60"
       style={{ 
         // O'quv markaz va zamonaviy dars xonasini ifodalovchi premium orqa fon rasmi
         backgroundImage: `url('https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1920&auto=format&fit=crop')` 
@@ -120,7 +122,7 @@ export const LoginPage = () => {
           </p>
         </div>
 
-        {/* Xatolik paneli: Shaffof va qizil tusli oyna */}
+        {/* Xatolik paneli */}
         {error && (
           <div className="mb-6 p-3.5 bg-red-500/10 border border-red-500/20 text-red-300 text-xs rounded-xl font-medium flex items-start gap-2.5 animate-fadeIn backdrop-blur-md">
             <span className="mt-0.5">⚠️</span>
@@ -131,7 +133,7 @@ export const LoginPage = () => {
         {/* Kirish Formasi */}
         <form onSubmit={handleSubmit} className="space-y-5">
           
-          {/* Telefon Input Bloki: To'liq shaffof oqish fon va blur */}
+          {/* Telefon Input Bloki */}
           <div>
             <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2" htmlFor="login-phone">
               Telefon raqam yoki Login
@@ -143,13 +145,13 @@ export const LoginPage = () => {
               placeholder="+998 (90) 123-4567"
               value={phone}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
-              // bg-white/10 va backdrop-blur-md orqali oq fon ko'rinadigan shaffoflik berildi
-              className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
+              // bg-white/10 va backdrop-blur-lg orqali orqa fon tiniq rasm bo'lsa ham input ichi chiroyli xira-oq bo'lib turadi
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/15 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
               disabled={isLoading}
             />
           </div>
 
-          {/* Parol Input Bloki: To'liq shaffof oqish fon va blur */}
+          {/* Parol Input Bloki */}
           <div>
             <label className="block text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2" htmlFor="login-password">
               Parol
@@ -161,8 +163,8 @@ export const LoginPage = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              // bg-white/10 va backdrop-blur-md orqali oq fon ko'rinadigan shaffoflik berildi
-              className="w-full px-4 py-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
+              // bg-white/10 va backdrop-blur-lg orqali orqa fon tiniq rasm bo'lsa ham input ichi chiroyli xira-oq bo'lib turadi
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/15 rounded-xl text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/20 transition-all duration-200"
               disabled={isLoading}
             />
           </div>
@@ -171,7 +173,7 @@ export const LoginPage = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-2 py-3.5 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#4361ee]/20 hover:shadow-[#4cc9f0]/20 active:scale-[0.99] transition-all duration-300 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-2 py-3.5 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white font-bold text-sm rounded-xl shadow-lg shadow-[#4361ee]/20 hover:shadow-[#4cc9f0]/20 active:scale-[0.99] transition-all duration-300 flex items-center justify-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <>
@@ -182,7 +184,7 @@ export const LoginPage = () => {
                 <span className="tracking-wide">Tekshirilmoqda...</span>
               </>
             ) : (
-              <span className="tracking-wide cursor-pointer">Tizimga kirish</span>
+              <span className="tracking-wide">Tizimga kirish</span>
             )}
           </button>
         </form>
