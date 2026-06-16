@@ -7,8 +7,15 @@ import { DashboardPage } from '../../features/dashboard/pages/DashboardPage';
 import { ProfilePage } from '../../features/profiles/pages/ProfilePage';
 import { ManagersPage } from '../../features/manager/pages/ManagersPage';
 
-// YANGI QO'SHILGAN IMPORT: Loyihangiz arxitekturasiga mos yo'nalishda
+// O'qituvchilar sahifasi importi
 import TeachersPage from '../../features/teachers/pages/TeachersPage';
+
+// Xonalar sahifasi importi
+import RoomsPage from '../../features/rooms/pages/RoomsPage';
+
+// ================= YANGI STUDENTLAR SAHIFASI IMPORTI =================
+import StudentsPage from '../../features/students/pages/StudentsPage';
+// =====================================================================
 
 export const router = createBrowserRouter([
   // 1. Ochiq sahifa (Faqat tizimga kirmaganlar uchun)
@@ -20,7 +27,7 @@ export const router = createBrowserRouter([
   // 2. To'liq himoyalangan CRM ichki tizimi
   {
     path: '/',
-    element: <RoleGuard />, // Hech qanday role berilmagani uchun faqat Tizimga kirganini (token) tekshiradi
+    element: <RoleGuard />, // Faqat Tizimga kirganini (token) tekshiradi
     children: [
       {
         element: <MainLayout />, // Tizimga kirgan bo'lsa Layout ichiga kiradi
@@ -52,11 +59,13 @@ export const router = createBrowserRouter([
             element: <RoleGuard allowedRoles={['ADMIN', 'MANAGER']} />,
             children: [
               { path: 'groups', element: <div className="p-6 text-text-main">Guruhlar sahifasi</div> },
-              { path: 'students', element: <div className="p-6 text-text-main">O'quvchilar sahifasi</div> },
               
-              // TUZATILGAN JOYI: Soxta div o'rniga haqiqiy sahifa komponenti ulandi
+              // ================= HAQIQIY STUDENTLAR SAHIFASI BULMINDAN ULINDI =================
+              { path: 'students', element: <StudentsPage /> },
+              // ===============================================================================
+              
               { path: 'teachers', element: <TeachersPage /> },
-              
+              { path: 'rooms', element: <RoomsPage /> },
               { path: 'finance', element: <div className="p-6 text-text-main">Moliya sahifasi</div> },
             ],
           },

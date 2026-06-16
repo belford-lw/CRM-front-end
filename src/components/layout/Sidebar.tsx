@@ -15,6 +15,11 @@ const navigationMenu: NavigationItem[] = [
   { name: 'Guruhlar', path: '/groups', allowedRoles: ['ADMIN', 'MANAGER'] },
   { name: 'O`quvchilar', path: '/students', allowedRoles: ['ADMIN', 'MANAGER'] },
   { name: 'O`qituvchilar', path: '/teachers', allowedRoles: ['ADMIN', 'MANAGER'] },
+  
+  // ================= YANGI QO'SHILGAN BO'LIM =================
+  { name: 'Xonalar', path: '/rooms', allowedRoles: ['ADMIN', 'MANAGER'] },
+  // ==========================================================
+  
   { name: 'Davomat', path: '/attendance', allowedRoles: ['TEACHER'] },
   { name: 'Moliya Bo`limi', path: '/finance', allowedRoles: ['ADMIN', 'MANAGER'] },
   { name: 'Mening Profilim', path: '/profile', allowedRoles: ['ADMIN', 'MANAGER', 'TEACHER', 'STUDENT'] },
