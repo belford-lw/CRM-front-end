@@ -151,7 +151,8 @@ export const StudentsPage = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-border text-[11px] font-bold text-text-muted uppercase tracking-wider">
-                  <th className="pb-3 pl-2">Ism Familiya</th>
+                  <th className="pb-3 pl-2 w-16">Rasm</th>
+                  <th className="pb-3">Ism Familiya</th>
                   <th className="pb-3">Telefon raqami</th>
                   <th className="pb-3">Tug‘ilgan sana</th>
                   <th className="pb-3">Boshlagan sana</th>
@@ -160,55 +161,70 @@ export const StudentsPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50 text-sm">
-                {students.map((student) => (
-                  <tr key={student.id} className="hover:bg-background/50 transition-colors group">
-                    <td className="py-3.5 pl-2 font-semibold text-text-main">
-                      {student.firstName || student.fullName || `${student.firstName} ${student.lastName}`}
-                    </td>
-                    <td className="py-3.5 text-text-main font-mono opacity-90">{student.phone}</td>
-                    <td className="py-3.5 text-text-muted">
-                      {student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString('uz-UZ') : '-'}
-                    </td>
-                    <td className="py-3.5 text-text-muted">
-                      {student.startDate ? new Date(student.startDate).toLocaleDateString('uz-UZ') : '-'}
-                    </td>
-                    <td className="py-3.5">
-                      {student.isActive ? (
-                        <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                          Faol
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
-                          Tark etgan
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3.5 text-right pr-2 space-x-2">
-                      <button
-                        onClick={() => handleEditClick(student)}
-                        className="text-xs bg-blue-500/10 hover:bg-blue-500 text-blue-600 dark:text-blue-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-blue-500/20 cursor-pointer"
-                      >
-                        Tahrirlash
-                      </button>
-                      
-                      {student.isActive ? (
+                {students.map((student) => {
+                  const studentName = student.fullName || `${student.firstName} ${student.lastName || ''}`.trim();
+                  return (
+                    <tr key={student.id} className="hover:bg-background/50 transition-colors group">
+                      <td className="py-3 pl-2">
+                        <img
+                          src={student.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=4361ee&color=fff&size=40`}
+                          alt="avatar"
+                          className="w-10 h-10 rounded-full object-cover border border-border shadow-sm"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null; 
+                            target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=random`;
+                          }}
+                        />
+                      </td>
+                      <td className="py-3.5 font-semibold text-text-main">
+                        {studentName}
+                      </td>
+                      <td className="py-3.5 text-text-main font-mono opacity-90">{student.phone}</td>
+                      <td className="py-3.5 text-text-muted">
+                        {student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString('uz-UZ') : '-'}
+                      </td>
+                      <td className="py-3.5 text-text-muted">
+                        {student.startDate ? new Date(student.startDate).toLocaleDateString('uz-UZ') : '-'}
+                      </td>
+                      <td className="py-3.5">
+                        {student.isActive ? (
+                          <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            Faol
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                            Tark etgan
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 text-right pr-2 space-x-2">
                         <button
-                          onClick={() => handleDeleteClick(student.id)}
-                          className="text-xs bg-rose-500/10 hover:bg-rose-500 text-rose-600 dark:text-rose-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-rose-500/20 cursor-pointer"
+                          onClick={() => handleEditClick(student)}
+                          className="text-xs bg-blue-500/10 hover:bg-blue-500 text-blue-600 dark:text-blue-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-blue-500/20 cursor-pointer"
                         >
-                          O'chirish
+                          Tahrirlash
                         </button>
-                      ) : (
-                        <button
-                          onClick={() => handleRestoreClick(student.id)}
-                          className="text-xs bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-emerald-500/20 cursor-pointer"
-                        >
-                          Tiklash
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                        
+                        {student.isActive ? (
+                          <button
+                            onClick={() => handleDeleteClick(student.id)}
+                            className="text-xs bg-rose-500/10 hover:bg-rose-500 text-rose-600 dark:text-rose-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-rose-500/20 cursor-pointer"
+                          >
+                            O'chirish
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleRestoreClick(student.id)}
+                            className="text-xs bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-emerald-500/20 cursor-pointer"
+                          >
+                            Tiklash
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             

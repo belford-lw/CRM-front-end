@@ -20,7 +20,7 @@ export interface TeacherFormState {
   monthlySalary: string;
   percentShare: string;
 }
-/// ergtht
+
 interface TeacherModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,7 +31,7 @@ interface TeacherModalProps {
 const initialFormState: TeacherFormState = {
   firstName: '',
   lastName: '',
-  phone: '',
+  phone: '+998',
   password: '',
   photoUrl: '',
   monthlySalary: '',
@@ -48,8 +48,8 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
       setFormData({
         firstName: names[0] || '',
         lastName: names[1] || '',
-        phone: editData.phone || '',
-        password: '',
+        phone: editData.phone || '+998',
+        password: '', // Parol xavfsizlik uchun bo'sh qoldiriladi
         photoUrl: editData.photoUrl || '',
         monthlySalary: editData.monthlySalary !== null && editData.monthlySalary !== undefined ? String(editData.monthlySalary) : '',
         percentShare: editData.percentShare !== null && editData.percentShare !== undefined ? String(editData.percentShare) : '',
@@ -65,6 +65,12 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    // Telefon raqam doim +998 bilan boshlanishini majburlash
+    if (name === 'phone' && !value.startsWith('+998')) {
+      return;
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -72,14 +78,20 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
     e.preventDefault();
     const payload: Record<string, any> = {};
     
-    if (formData.firstName.trim()) payload.firstName = formData.firstName.trim();
-    if (formData.lastName.trim()) payload.lastName = formData.lastName.trim();
-    if (formData.phone.trim()) payload.phone = formData.phone.replace(/\s+/g, '');
+    if (!formData.firstName.trim() || !formData.lastName.trim() || formData.phone.trim() === '+998') {
+      return alert("Iltimos, barcha majburiy maydonlarni to‘ldiring!");
+    }
+
+    payload.firstName = formData.firstName.trim();
+    payload.lastName = formData.lastName.trim();
+    payload.phone = formData.phone.replace(/\s+/g, '');
     
-    if (formData.password && formData.password.length >= 6) {
+    if (formData.password) {
+      if (formData.password.length < 6) return alert("Parol kamida 6 ta belgidan iborat bo'lishi shart");
       payload.password = formData.password;
     }
-    if (formData.photoUrl.trim()) payload.photoUrl = formData.photoUrl.trim();
+    
+    payload.photoUrl = formData.photoUrl.trim() || null;
 
     if (payScheme === 'salary') {
       if (!formData.monthlySalary) return alert("Oylik summasini kiriting");
@@ -97,71 +109,76 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex justify-center items-center p-4 z-50 backdrop-blur-xs">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-lg overflow-hidden border dark:border-gray-700 transition-colors duration-200">
-        <div className="p-6 border-b dark:border-gray-700 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 antialiased animate-in fade-in duration-200">
+      <div className="bg-card border border-border w-full max-w-lg rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transition-colors duration-300">
+        
+        {/* Header */}
+        <div className="p-6 border-b border-border flex items-center justify-between bg-background/30 backdrop-blur-md">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted">
             {editData ? "O'qituvchini tahrirlash" : "Yangi o'qituvchi yaratish"}
           </h2>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl">&times;</button>
+          <button type="button" onClick={onClose} className="text-text-muted hover:text-text-main text-2xl border-none bg-transparent cursor-pointer">&times;</button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
+        {/* Form oynasi */}
+        <form onSubmit={handleFormSubmit} className="p-6 space-y-5 overflow-y-auto flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ism *</label>
-              <input required minLength={2} type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Ism *</label>
+              <input required minLength={2} type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Sardor" className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Familiya *</label>
-              <input required minLength={2} type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+              <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Familiya *</label>
+              <input required minLength={2} type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Toshpolatov" className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Telefon *</label>
-            <input required type="text" name="phone" placeholder="+998901234567" value={formData.phone} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Telefon *</label>
+            <input required type="text" name="phone" placeholder="+998901234567" value={formData.phone} onChange={handleInputChange} className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Parol {editData ? "(Ixtiyoriy)" : "* (Kamida 6 belgi)"}
+            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">
+              Parol {editData ? <span className="text-[10px] text-text-muted opacity-70 font-normal lowercase">(ixtiyoriy)</span> : "* (Kamida 6 belgi)"}
             </label>
-            <input required={!editData} minLength={6} type="password" name="password" value={formData.password} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <input required={!editData} type="password" name="password" value={formData.password} onChange={handleInputChange} placeholder="••••••••" className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Rasm URL (Ixtiyoriy)</label>
-            <input type="text" name="photoUrl" value={formData.photoUrl} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Rasm URL (Ixtiyoriy)</label>
+            <input type="text" name="photoUrl" value={formData.photoUrl} onChange={handleInputChange} placeholder="https://example.com/avatar.jpg" className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
           </div>
 
-          <div className="border dark:border-gray-700 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">To'lov Tizimi *</label>
-            <div className="flex gap-4 mb-3">
-              <label className="flex items-center text-sm gap-1.5 cursor-pointer font-medium text-gray-600 dark:text-gray-300">
-                <input type="radio" checked={payScheme === 'salary'} onChange={() => setPayScheme('salary')} className="text-indigo-600 focus:ring-indigo-500" /> Fiksirlangan Oylik
+          {/* To'lov tizimi */}
+          <div className="border border-border p-4 rounded-xl bg-background/50">
+            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-2.5">To'lov Tizimi *</label>
+            <div className="flex gap-5 mb-3">
+              <label className="flex items-center text-xs gap-1.5 cursor-pointer font-bold text-text-main">
+                <input type="radio" checked={payScheme === 'salary'} onChange={() => setPayScheme('salary')} className="accent-[#4361ee] h-4 w-4" /> Fiksirlangan Oylik
               </label>
-              <label className="flex items-center text-sm gap-1.5 cursor-pointer font-medium text-gray-600 dark:text-gray-300">
-                <input type="radio" checked={payScheme === 'percent'} onChange={() => setPayScheme('percent')} className="text-indigo-600 focus:ring-indigo-500" /> Foiz ulushi (%)
+              <label className="flex items-center text-xs gap-1.5 cursor-pointer font-bold text-text-main">
+                <input type="radio" checked={payScheme === 'percent'} onChange={() => setPayScheme('percent')} className="accent-[#4361ee] h-4 w-4" /> Foiz ulushi (%)
               </label>
             </div>
 
             {payScheme === 'salary' ? (
               <div>
-                <label className="block text-xs font-medium text-gray-750 dark:text-gray-300 mb-1">Oylik summasi (so'mda)</label>
-                <input required type="number" min="0" name="monthlySalary" value={formData.monthlySalary} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <label className="block text-[11px] font-medium text-text-muted mb-1">Oylik summasi (so'mda)</label>
+                <input required type="number" min="0" name="monthlySalary" value={formData.monthlySalary} onChange={handleInputChange} className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
               </div>
             ) : (
               <div>
-                <label className="block text-xs font-medium text-gray-750 dark:text-gray-300 mb-1">Foiz ulushi (0 - 100 %)</label>
-                <input required type="number" min="0" max="100" step="0.01" name="percentShare" value={formData.percentShare} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-600 rounded-lg p-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <label className="block text-[11px] font-medium text-text-muted mb-1">Foiz ulushi (0 - 100 %)</label>
+                <input required type="number" min="0" max="100" step="0.01" name="percentShare" value={formData.percentShare} onChange={handleInputChange} className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
               </div>
             )}
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t dark:border-gray-700">
-            <button type="button" onClick={onClose} className="px-4 py-2 border dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Bekor qilish</button>
-            <button type="submit" className="px-4 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg text-sm hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-sm">Saqlash</button>
+          {/* Footer Actions */}
+          <div className="pt-4 border-t border-border flex justify-end gap-3">
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-background hover:bg-border/50 text-text-muted rounded-xl text-xs font-bold transition-all cursor-pointer">Bekor qilish</button>
+            <button type="submit" className="px-5 py-2 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md cursor-pointer">Saqlash</button>
           </div>
         </form>
       </div>

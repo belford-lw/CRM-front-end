@@ -14,8 +14,9 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    phone: '',
+    phone: '+998',
     password: '',
+    photoUrl: '',
     isActive: true,
     dateOfBirth: '',
     startDate: '',
@@ -24,7 +25,6 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Sanani xavfsiz formatlash funksiyasi (YYYY-MM-DD formatiga)
   const formatDateToInput = (dateString: string | undefined | null) => {
     if (!dateString) return '';
     try {
@@ -41,8 +41,9 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
       setFormData({
         firstName: student.firstName || '',
         lastName: student.lastName || '',
-        phone: student.phone || '',
+        phone: student.phone || '+998',
         password: '', 
+        photoUrl: student.photoUrl || '',
         isActive: student.isActive ?? true,
         dateOfBirth: formatDateToInput(student.dateOfBirth), 
         startDate: formatDateToInput(student.startDate),
@@ -51,8 +52,9 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
       setFormData({
         firstName: '',
         lastName: '',
-        phone: '',
+        phone: '+998',
         password: '',
+        photoUrl: '',
         isActive: true,
         dateOfBirth: '',
         startDate: '',
@@ -65,6 +67,14 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+    
+    // Telefon raqam doim +998 bilan boshlanishini ta'minlash
+    if (name === 'phone') {
+      if (!value.startsWith('+998')) {
+        return;
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
@@ -76,7 +86,7 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
     setError(null);
     setIsLoading(true);
 
-    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.phone.trim()) {
+    if (!formData.firstName.trim() || !formData.lastName.trim() || formData.phone.trim() === '+998') {
       setError('Iltimos, barcha majburiy maydonlarni to‘ldiring!');
       setIsLoading(false);
       return;
@@ -98,12 +108,13 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
         return;
       }
 
-      const { firstName, lastName, phone, password, isActive } = formData;
+      const { firstName, lastName, phone, password, photoUrl, isActive } = formData;
 
       let payload: any = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         phone: phone.trim(),
+        photoUrl: photoUrl.trim() || null,
         dateOfBirth: isoBirthDate.toISOString(),
         startDate: isoStartDate.toISOString(),
       };
@@ -196,6 +207,18 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
               value={formData.phone}
               onChange={handleChange}
               placeholder="+998944390910"
+              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Rasm URL (Ixtiyoriy)</label>
+            <input
+              type="text"
+              name="photoUrl"
+              value={formData.photoUrl}
+              onChange={handleChange}
+              placeholder="https://example.com/avatar.jpg"
               className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all"
             />
           </div>

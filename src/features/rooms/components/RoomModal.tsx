@@ -57,18 +57,18 @@ export default function RoomModal({ isOpen, onClose, onSubmit, editData, current
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-[#3a506b]/40 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-card border border-border w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 relative animate-in fade-in zoom-in-95 duration-200">
         
         {/* Yopish tugmasi */}
         <button 
           type="button"
           onClick={onClose} 
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl transition-colors cursor-pointer border-none bg-transparent"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-main text-xl transition-colors cursor-pointer border-none bg-transparent"
         >
           ✕
         </button>
 
-        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-text-muted mb-4">
           {editData ? "Xonani tahrirlash" : "Yangi xona yaratish"}
         </h2>
 
@@ -80,7 +80,7 @@ export default function RoomModal({ isOpen, onClose, onSubmit, editData, current
           )}
 
           <div>
-            <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Xona nomi *</label>
+            <label className="text-[11px] font-bold text-text-muted">Xona nomi *</label>
             <input
               required
               minLength={2}
@@ -91,12 +91,12 @@ export default function RoomModal({ isOpen, onClose, onSubmit, editData, current
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Masalan: Room 101"
-              className="w-full mt-1.5 px-3 py-2 bg-white dark:bg-[#1c2541]/50 border border-slate-300 dark:border-[#3a506b]/30 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all disabled:opacity-50"
+              className="w-full mt-1.5 px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/60 text-xs focus:outline-none focus:border-primary transition-all disabled:opacity-50"
             />
           </div>
 
           <div>
-            <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Xona sig'imi *</label>
+            <label className="text-[11px] font-bold text-text-muted">Xona sig'imi *</label>
             <input
               required
               type="number"
@@ -106,22 +106,22 @@ export default function RoomModal({ isOpen, onClose, onSubmit, editData, current
               value={formData.capacity}
               onChange={handleInputChange}
               placeholder="Masalan: 15"
-              className="w-full mt-1.5 px-3 py-2 bg-white dark:bg-[#1c2541]/50 border border-slate-300 dark:border-[#3a506b]/30 rounded-xl text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all disabled:opacity-50"
+              className="w-full mt-1.5 px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/60 text-xs focus:outline-none focus:border-primary transition-all disabled:opacity-50"
             />
           </div>
 
-          <div className="flex gap-2 justify-end pt-2 border-t border-slate-100 dark:border-[#3a506b]/10">
+          <div className="flex gap-2 justify-end pt-2 border-t border-border">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              className="px-4 py-2 bg-text-main/5 hover:bg-text-main/10 text-text-main rounded-xl text-xs font-bold transition-all cursor-pointer"
             >
               Bekor qilish
             </button>
             <button
               type="submit"
               disabled={isCreateDisabled}
-              className="px-5 py-2 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md disabled:opacity-50 cursor-pointer"
+              className="px-5 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md disabled:opacity-50 cursor-pointer"
             >
               Saqlash
             </button>

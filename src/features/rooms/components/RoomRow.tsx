@@ -8,12 +8,12 @@ interface RoomRowProps {
 
 export default function RoomRow({ room, onEdit, onDelete }: RoomRowProps) {
   return (
-    <tr className="hover:bg-slate-500/5 dark:hover:bg-white/5 transition-colors group">
-      <td className="py-3.5 pl-2 font-semibold text-slate-900 dark:text-white">
+    <tr className="hover:bg-text-main/5 transition-colors group">
+      <td className="py-3.5 pl-2 font-semibold text-text-main">
         {room.name}
       </td>
       <td className="py-3.5">
-        <span className="bg-[#4361ee]/10 dark:bg-[#4cc9f0]/10 text-[#4361ee] dark:text-[#4cc9f0] text-xs font-bold px-2.5 py-1 rounded-lg border border-[#4361ee]/20 dark:border-[#4cc9f0]/20">
+        <span className="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-lg border border-primary/20">
           {room.capacity} ta o'quvchi
         </span>
       </td>

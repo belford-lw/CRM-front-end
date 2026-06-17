@@ -84,10 +84,8 @@ export default function TeachersPage() {
     try {
       if (selectedTeacher && selectedTeacher.id) {
         await teachersApi.update(selectedTeacher.id, payload);
-        alert("Muvaffaqiyatli yangilandi!");
       } else {
         await teachersApi.create(payload);
-        alert("Muvaffaqiyatli yaratildi!");
       }
       setIsModalOpen(false);
       loadTeachers(search, isActive, page);
@@ -98,10 +96,9 @@ export default function TeachersPage() {
   };
 
   const handleDelete = async (id: string | number) => {
-    if (!id || !window.confirm("O'qituvchi holatini nofaol qilmoqchimisiz?")) return;
+    if (!id || !window.confirm("O'qituvchi holatini nofaol qilmoqchimisiz? (Tizimga kira olmaydi)")) return;
     try {
       await teachersApi.remove(id);
-      alert("O'qituvchi holati nofaol qilindi.");
       loadTeachers(search, isActive, page);
     } catch (error: any) {
       alert(error.response?.data?.message || "O'chirishda xatolik.");
@@ -112,7 +109,6 @@ export default function TeachersPage() {
     if (!id) return;
     try {
       await teachersApi.restore(id);
-      alert("O'qituvchi faoliyati qayta tiklandi.");
       loadTeachers(search, isActive, page);
     } catch (error: any) {
       alert(error.response?.data?.message || "Tiklashda xatolik.");
@@ -120,61 +116,74 @@ export default function TeachersPage() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen font-sans transition-colors duration-200">
-      <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-background text-text-main p-6 antialiased transition-colors duration-300">
+      
+      {/* Sahifa Header qismi */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">O'qituvchilar paneli</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Filtrlash, yaratish va boshqarish tizimi</p>
+          <h1 className="text-2xl font-black text-text-main tracking-wide uppercase">
+            O‘qituvchilar paneli
+          </h1>
+          <p className="text-xs text-text-muted mt-1">
+            Backend tizimi bilan to'liq integratsiya qilingan ustozlar boshqaruvi
+          </p>
         </div>
+        
         <button
           onClick={() => { setSelectedTeacher(null); setIsModalOpen(true); }}
-          className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white px-4 py-2 rounded-lg shadow transition text-sm font-medium"
+          className="px-5 py-2.5 bg-gradient-to-r from-[#4361ee] to-[#3f37c9] hover:from-[#4cc9f0] hover:to-[#4361ee] text-white font-bold text-xs rounded-xl shadow-lg shadow-[#4361ee]/20 hover:shadow-[#4cc9f0]/20 active:scale-[0.98] transition-all duration-300 uppercase tracking-wider cursor-pointer"
         >
-          + Yangi o'qituvchi
+          + Yangi o‘qituvchi
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4 transition-colors duration-200">
-        <div className="flex-1">
+      {/* Qidiruv va Filtrlar paneli */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+        <div className="sm:col-span-3">
           <input
             type="text"
-            placeholder="Qidirish..."
+            placeholder="Ism yoki telefon bo'yicha qidirish..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main placeholder:text-text-muted text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/10 transition-all duration-300"
           />
         </div>
-        <div className="w-full md:w-48">
+        <div>
           <select
             value={isActive}
             onChange={(e) => { setIsActive(e.target.value); setPage(1); }}
-            className="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main text-sm focus:outline-none focus:border-[#4cc9f0] transition-all duration-300 cursor-pointer"
           >
-            <option value="true">Faol o'qituvchilar</option>
-            <option value="false">Nofaol o'qituvchilar</option>
+            <option value="true" className="bg-card text-text-main">Faol o'qituvchilar</option>
+            <option value="false" className="bg-card text-text-main">Nofaol o'qituvchilar</option>
           </select>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-colors duration-200">
+      {/* Asosiy Ma'lumotlar Jadvali */}
+      <div className="bg-card border border-border rounded-2xl p-6 shadow-sm transition-colors duration-300">
         {loading ? (
-          <div className="p-12 text-center text-gray-500 dark:text-gray-400 font-medium">Yuklanmoqda...</div>
+          <div className="text-center py-12 text-sm text-text-muted animate-pulse">
+            Serverdan ma'lumotlar yuklanmoqda...
+          </div>
         ) : teachers.length === 0 ? (
-          <div className="p-12 text-center text-gray-500 dark:text-gray-400">Hech qanday o'qituvchi topilmadi.</div>
+          <div className="text-center py-12 text-text-muted text-sm font-medium">
+            Hech qanday o‘qituvchi topilmadi.
+          </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="w-full overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-sm border-b dark:border-gray-600">
-                  <th className="p-4 w-16">Rasm</th>
-                  <th className="p-4">To'liq ism</th>
-                  <th className="p-4">Telefon</th>
-                  <th className="p-4">To'lov sxemasi</th>
-                  <th className="p-4">Holati</th>
-                  <th className="p-4 text-center">Amallar</th>
+                <tr className="border-b border-border text-[11px] font-bold text-text-muted uppercase tracking-wider">
+                  <th className="pb-3 pl-2 w-16">Rasm</th>
+                  <th className="pb-3">To'liq ism</th>
+                  <th className="pb-3">Telefon raqami</th>
+                  <th className="pb-3">To'lov sxemasi</th>
+                  <th className="pb-3">Holati</th>
+                  <th className="pb-3 text-right pr-2">Amallar</th>
                 </tr>
               </thead>
-              <tbody className="divide-y dark:divide-gray-700">
+              <tbody className="divide-y divide-border/50 text-sm">
                 {teachers.map((teacher) => (
                   <TeacherRow
                     key={teacher.id || teacher.userId}
@@ -186,29 +195,29 @@ export default function TeachersPage() {
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
-
-        {!loading && meta.pages > 1 && (
-          <div className="p-4 border-t dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-750 text-sm">
-            <span className="text-gray-500 dark:text-gray-400">Jami {meta.total} tadan {teachers.length} tasi ko'rsatilmoqda</span>
-            <div className="flex gap-2">
-              <button
-                disabled={page === 1}
-                onClick={() => setPage(p => Math.max(p - 1, 1))}
-                className="px-3 py-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
-              >
-                Oldingi
-              </button>
-              <span className="px-3 py-1 font-medium text-gray-800 dark:text-gray-200">{page} / {meta.pages}</span>
-              <button
-                disabled={page === meta.pages}
-                onClick={() => setPage(p => Math.min(p + 1, meta.pages))}
-                className="px-3 py-1 border dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
-              >
-                Keyingi
-              </button>
-            </div>
+            
+            {/* Pagination boshqaruvi */}
+            {meta.pages > 1 && (
+              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
+                <button
+                  disabled={page === 1}
+                  onClick={() => setPage(p => Math.max(p - 1, 1))}
+                  className="px-3 py-1.5 bg-background border border-border text-xs rounded-lg disabled:opacity-30 cursor-pointer text-text-muted hover:bg-border/40 transition-all"
+                >
+                  Oldingi
+                </button>
+                <span className="text-xs text-text-muted self-center px-2">
+                  {page} / {meta.pages}
+                </span>
+                <button
+                  disabled={page === meta.pages}
+                  onClick={() => setPage(p => Math.min(p + 1, meta.pages))}
+                  className="px-3 py-1.5 bg-background border border-border text-xs rounded-lg disabled:opacity-30 cursor-pointer text-text-muted hover:bg-border/40 transition-all"
+                >
+                  Keyingi
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

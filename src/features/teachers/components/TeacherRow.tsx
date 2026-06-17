@@ -20,12 +20,12 @@ interface TeacherRowProps {
 
 export default function TeacherRow({ teacher, onEdit, onDelete, onRestore }: TeacherRowProps) {
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition text-gray-600 dark:text-gray-300 text-sm border-b dark:border-gray-700">
-      <td className="p-4">
+    <tr className="hover:bg-background/50 transition-colors group">
+      <td className="py-3 pl-2">
         <img
-          src={teacher.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.fullName)}&background=indigo&color=fff&size=40`}
+          src={teacher.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.fullName)}&background=4361ee&color=fff&size=40`}
           alt="avatar"
-          className="w-10 h-10 rounded-full object-cover border dark:border-gray-600"
+          className="w-10 h-10 rounded-full object-cover border border-border shadow-sm"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null; 
@@ -33,47 +33,53 @@ export default function TeacherRow({ teacher, onEdit, onDelete, onRestore }: Tea
           }}
         />
       </td>
-      <td className="p-4 font-medium text-gray-950 dark:text-white">{teacher.fullName}</td>
-      <td className="p-4">{teacher.phone}</td>
-      <td className="p-4">
+      <td className="py-3.5 font-semibold text-text-main">
+        {teacher.fullName}
+      </td>
+      <td className="py-3.5 text-text-main font-mono opacity-90">{teacher.phone}</td>
+      <td className="py-3.5">
         {teacher.monthlySalary ? (
-          <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs font-semibold px-2.5 py-0.5 rounded">
+          <span className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-emerald-500/20">
             Oylik: {parseFloat(String(teacher.monthlySalary)).toLocaleString()} so'm
           </span>
         ) : teacher.percentShare ? (
-          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 text-xs font-semibold px-2.5 py-0.5 rounded">
+          <span className="bg-[#4361ee]/10 text-[#4361ee] dark:text-[#4cc9f0] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-[#4361ee]/20">
             Foiz: {teacher.percentShare}%
           </span>
         ) : (
-          <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2.5 py-0.5 rounded">Belgilanmagan</span>
+          <span className="bg-text-main/10 text-text-muted text-[11px] px-2.5 py-1 rounded-lg">Belgilanmagan</span>
         )}
       </td>
-      <td className="p-4">
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          teacher.isActive ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400'
-        }`}>
-          {teacher.isActive ? 'Faol' : 'Noaktiv'}
-        </span>
+      <td className="py-3.5">
+        {teacher.isActive ? (
+          <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            Faol
+          </span>
+        ) : (
+          <span className="px-2.5 py-0.5 text-[10px] font-bold rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+            Nofaol
+          </span>
+        )}
       </td>
-      <td className="p-4 text-center flex justify-center gap-3">
-        <button 
-          onClick={() => onEdit(teacher)} 
-          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-medium"
+      <td className="py-3.5 text-right pr-2 space-x-2">
+        <button
+          onClick={() => onEdit(teacher)}
+          className="text-xs bg-blue-500/10 hover:bg-blue-500 text-blue-600 dark:text-blue-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-blue-500/20 cursor-pointer"
         >
           Tahrirlash
         </button>
         
         {teacher.isActive ? (
-          <button 
-            onClick={() => onDelete(teacher.id)} 
-            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium"
+          <button
+            onClick={() => onDelete(teacher.id)}
+            className="text-xs bg-rose-500/10 hover:bg-rose-500 text-rose-600 dark:text-rose-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-rose-500/20 cursor-pointer"
           >
             Nofaol qilish
           </button>
         ) : (
-          <button 
-            onClick={() => onRestore(teacher.id)} 
-            className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-medium"
+          <button
+            onClick={() => onRestore(teacher.id)}
+            className="text-xs bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white px-2.5 py-1 rounded-md transition-all border border-emerald-500/20 cursor-pointer"
           >
             Tiklash
           </button>
