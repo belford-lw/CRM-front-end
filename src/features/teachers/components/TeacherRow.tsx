@@ -20,7 +20,8 @@ interface TeacherRowProps {
 
 export default function TeacherRow({ teacher, onEdit, onDelete, onRestore }: TeacherRowProps) {
   return (
-    <tr className="hover:bg-background/50 transition-colors group">
+    // 🌟 Agar teacher nofaol bo'lsa opacity xiraroq qilamiz, vizual zo'r ko'rinadi
+    <tr className={`hover:bg-background/50 transition-colors group ${!teacher.isActive ? 'opacity-60 bg-black/5 dark:bg-white/5' : ''}`}>
       <td className="py-3 pl-2">
         <img
           src={teacher.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.fullName)}&background=4361ee&color=fff&size=40`}
@@ -69,6 +70,7 @@ export default function TeacherRow({ teacher, onEdit, onDelete, onRestore }: Tea
           Tahrirlash
         </button>
         
+        {/* 🌟 Faol va nofaol tugmalari dinamik almashadi va har doim yonida turaveradi */}
         {teacher.isActive ? (
           <button
             onClick={() => onDelete(teacher.id)}

@@ -16,7 +16,6 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
     lastName: '',
     phone: '+998',
     password: '',
-    photoUrl: '',
     isActive: true,
     dateOfBirth: '',
     startDate: '',
@@ -43,7 +42,6 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
         lastName: student.lastName || '',
         phone: student.phone || '+998',
         password: '', 
-        photoUrl: student.photoUrl || '',
         isActive: student.isActive ?? true,
         dateOfBirth: formatDateToInput(student.dateOfBirth), 
         startDate: formatDateToInput(student.startDate),
@@ -54,7 +52,6 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
         lastName: '',
         phone: '+998',
         password: '',
-        photoUrl: '',
         isActive: true,
         dateOfBirth: '',
         startDate: '',
@@ -68,7 +65,6 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     
-    // Telefon raqam doim +998 bilan boshlanishini ta'minlash
     if (name === 'phone') {
       if (!value.startsWith('+998')) {
         return;
@@ -108,13 +104,13 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
         return;
       }
 
-      const { firstName, lastName, phone, password, photoUrl, isActive } = formData;
+      const { firstName, lastName, phone, password, isActive } = formData;
 
+      // 🛡️ Backend DTO formatiga mos payload (photoUrl yo'q)
       let payload: any = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         phone: phone.trim(),
-        photoUrl: photoUrl.trim() || null,
         dateOfBirth: isoBirthDate.toISOString(),
         startDate: isoStartDate.toISOString(),
       };
@@ -127,6 +123,11 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
       } else {
         if (!password.trim()) {
           setError('Yangi o‘quvchi uchun tizim parolini kiriting!');
+          setIsLoading(false);
+          return;
+        }
+        if (password.trim().length < 6) {
+          setError('Parol kamida 6 ta belgi bo‘lishi shart!');
           setIsLoading(false);
           return;
         }
@@ -212,20 +213,8 @@ export const StudentFormModal = ({ isOpen, onClose, onSubmit, student }: Student
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">Rasm URL (Ixtiyoriy)</label>
-            <input
-              type="text"
-              name="photoUrl"
-              value={formData.photoUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/avatar.jpg"
-              className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main placeholder:text-text-muted/50 text-xs focus:outline-none focus:border-[#4cc9f0] transition-all"
-            />
-          </div>
-
-          <div>
             <label className="block text-[11px] font-bold text-text-muted uppercase tracking-wider mb-1.5">
-              Tizim uchun Parol {!isEditMode ? '*' : <span className="text-[10px] text-text-muted opacity-70 font-normal lowercase">(ixtiyoriy)</span>}
+              Tizim uchun Parol {!isEditMode ? '*' : <span className="text-[10px] text-text-muted opacity-70 font-normal lowercase">(o'zgartirmaslik uchun bo'sh qoldiring)</span>}
             </label>
             <input
               type="password"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { teachersApi } from '../api/teachers.api';
 import TeacherRow from '../components/TeacherRow';
 import TeacherModal from '../components/TeacherModal';
@@ -32,20 +32,21 @@ export default function TeachersPage() {
   const [loading, setLoading] = useState<boolean>(true);
   
   const [search, setSearch] = useState<string>('');
-  const [isActive, setIsActive] = useState<string>('true');
+  // 🌟 Barchasi (all) standart holatda tanlangan bo'ladi
+  const [statusFilter, setStatusFilter] = useState<string>('all'); 
   const [page, setPage] = useState<number>(1);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
 
-  const loadTeachers = useCallback(async (currentSearch: string, currentIsActive: string, currentPage: number) => {
+  // Backenddan barcha ma'lumotlarni yuklash (isActive filtri yuborilmaydi)
+  const loadTeachers = useCallback(async (currentSearch: string, currentPage: number) => {
     setLoading(true);
     try {
       const query = {
         search: currentSearch.trim() || undefined,
-        isActive: currentIsActive || undefined,
         page: currentPage,
-        limit: 10
+        limit: 50 // Hammasi ko'rinishi va frontendda to'g'ri filtrlanishi uchun limit kattaroq qilindi
       };
       
       const response = await teachersApi.findAll(query);
@@ -75,10 +76,20 @@ export default function TeachersPage() {
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      loadTeachers(search, isActive, page);
+      loadTeachers(search, page);
     }, 400);
     return () => clearTimeout(delayDebounce);
-  }, [search, isActive, page, loadTeachers]);
+  }, [search, page, loadTeachers]);
+
+  // 🌟 Select holatiga qarab frontendning o'zida dinamik filtrlash
+  const filteredTeachers = useMemo(() => {
+    return teachers.filter(teacher => {
+      if (statusFilter === 'all') return true; // Hamma o'qituvchilar ko'rinadi
+      if (statusFilter === 'true') return teacher.isActive === true; // Faqat faollar
+      if (statusFilter === 'false') return teacher.isActive === false; // Faqat nofaollar
+      return true;
+    });
+  }, [teachers, statusFilter]);
 
   const handleFormSubmit = async (payload: any) => {
     try {
@@ -88,28 +99,30 @@ export default function TeachersPage() {
         await teachersApi.create(payload);
       }
       setIsModalOpen(false);
-      loadTeachers(search, isActive, page);
+      loadTeachers(search, page);
     } catch (error: any) {
       const errMsg = error.response?.data?.message || "Amal bajarilmadi.";
       alert("Xatolik: " + (Array.isArray(errMsg) ? errMsg.join('\n') : errMsg));
     }
   };
 
+  // Nofaol qilish bosilganda stateni frontendda darhol o'zgartirish
   const handleDelete = async (id: string | number) => {
     if (!id || !window.confirm("O'qituvchi holatini nofaol qilmoqchimisiz? (Tizimga kira olmaydi)")) return;
     try {
       await teachersApi.remove(id);
-      loadTeachers(search, isActive, page);
+      setTeachers(prev => prev.map(t => t.id === id ? { ...t, isActive: false } : t));
     } catch (error: any) {
       alert(error.response?.data?.message || "O'chirishda xatolik.");
     }
   };
 
+  // Qayta tiklash bosilganda stateni frontendda darhol faol qilish
   const handleRestore = async (id: string | number) => {
     if (!id) return;
     try {
       await teachersApi.restore(id);
-      loadTeachers(search, isActive, page);
+      setTeachers(prev => prev.map(t => t.id === id ? { ...t, isActive: true } : t));
     } catch (error: any) {
       alert(error.response?.data?.message || "Tiklashda xatolik.");
     }
@@ -137,28 +150,32 @@ export default function TeachersPage() {
         </button>
       </div>
 
-      {/* Qidiruv va Filtrlar paneli */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
-        <div className="sm:col-span-3">
-          <input
-            type="text"
-            placeholder="Ism yoki telefon bo'yicha qidirish..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main placeholder:text-text-muted text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/10 transition-all duration-300"
-          />
-        </div>
-        <div>
-          <select
-            value={isActive}
-            onChange={(e) => { setIsActive(e.target.value); setPage(1); }}
-            className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main text-sm focus:outline-none focus:border-[#4cc9f0] transition-all duration-300 cursor-pointer"
-          >
-            <option value="true" className="bg-card text-text-main">Faol o'qituvchilar</option>
-            <option value="false" className="bg-card text-text-main">Nofaol o'qituvchilar</option>
-          </select>
-        </div>
-      </div>
+{/* Qidiruv va Filtrlar paneli */}
+<div className="flex flex-col sm:flex-row gap-4 mb-6 items-center">
+  {/* Qidiruv inputi endi ko'proq joy egallaydi (flex-1) */}
+  <div className="w-full sm:flex-1">
+    <input
+      type="text"
+      placeholder="Ism yoki telefon bo'yicha qidirish..."
+      value={search}
+      onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+      className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main placeholder:text-text-muted text-sm focus:outline-none focus:border-[#4cc9f0] focus:ring-4 focus:ring-[#4cc9f0]/10 transition-all duration-300"
+    />
+  </div>
+  
+  {/* 🌟 Select tugmasi ixchamlashtirildi: w-full sm:w-auto va max-w kiritildi */}
+  <div className="w-full sm:w-auto">
+    <select
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
+      className="w-full sm:w-auto min-w-[200px] max-w-[260px] px-4 py-3 bg-card border border-border rounded-xl text-text-main text-sm focus:outline-none focus:border-[#4cc9f0] transition-all duration-300 cursor-pointer font-medium"
+    >
+      <option value="all" className="bg-card text-text-main">🔄 Barchasi</option>
+      <option value="true" className="bg-card text-text-main">🟢 Faqat Faollar</option>
+      <option value="false" className="bg-card text-text-main">🔴 Faqat Nofaollar</option>
+    </select>
+  </div>
+</div>
 
       {/* Asosiy Ma'lumotlar Jadvali */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm transition-colors duration-300">
@@ -166,7 +183,7 @@ export default function TeachersPage() {
           <div className="text-center py-12 text-sm text-text-muted animate-pulse">
             Serverdan ma'lumotlar yuklanmoqda...
           </div>
-        ) : teachers.length === 0 ? (
+        ) : filteredTeachers.length === 0 ? (
           <div className="text-center py-12 text-text-muted text-sm font-medium">
             Hech qanday o‘qituvchi topilmadi.
           </div>
@@ -184,7 +201,7 @@ export default function TeachersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50 text-sm">
-                {teachers.map((teacher) => (
+                {filteredTeachers.map((teacher) => (
                   <TeacherRow
                     key={teacher.id || teacher.userId}
                     teacher={teacher}
@@ -195,29 +212,6 @@ export default function TeachersPage() {
                 ))}
               </tbody>
             </table>
-            
-            {/* Pagination boshqaruvi */}
-            {meta.pages > 1 && (
-              <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage(p => Math.max(p - 1, 1))}
-                  className="px-3 py-1.5 bg-background border border-border text-xs rounded-lg disabled:opacity-30 cursor-pointer text-text-muted hover:bg-border/40 transition-all"
-                >
-                  Oldingi
-                </button>
-                <span className="text-xs text-text-muted self-center px-2">
-                  {page} / {meta.pages}
-                </span>
-                <button
-                  disabled={page === meta.pages}
-                  onClick={() => setPage(p => Math.min(p + 1, meta.pages))}
-                  className="px-3 py-1.5 bg-background border border-border text-xs rounded-lg disabled:opacity-30 cursor-pointer text-text-muted hover:bg-border/40 transition-all"
-                >
-                  Keyingi
-                </button>
-              </div>
-            )}
           </div>
         )}
       </div>

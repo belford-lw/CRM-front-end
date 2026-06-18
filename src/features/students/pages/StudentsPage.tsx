@@ -51,7 +51,14 @@ export const StudentsPage = () => {
   };
 
   const handleEditClick = (student: Student) => {
-    setSelectedStudent(student);
+    // Backend toView() formatidan formaga o'tkazish uchun firstName va lastName ajratib olinadi
+    const nameParts = student.fullName ? student.fullName.split(' ') : [];
+    const enrichedStudent = {
+      ...student,
+      firstName: student.firstName || nameParts[0] || '',
+      lastName: student.lastName || nameParts.slice(1).join(' ') || '',
+    };
+    setSelectedStudent(enrichedStudent);
     setIsModalOpen(true);
   };
 
@@ -129,9 +136,9 @@ export const StudentsPage = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full px-4 py-3 bg-card border border-border rounded-xl text-text-main text-sm focus:outline-none focus:border-[#4cc9f0] transition-all duration-300 cursor-pointer"
           >
-            <option value="all" className="bg-card text-text-main">Barcha holatdagilar</option>
-            <option value="active" className="bg-card text-text-main">Faqat Faol o‘quvchilar</option>
-            <option value="inactive" className="bg-card text-text-main">Tark etganlar (Faolmas)</option>
+            <option value="all">Barcha holatdagilar</option>
+            <option value="active">Faqat Faol o‘quvchilar</option>
+            <option value="inactive">Tark etganlar (Faolmas)</option>
           </select>
         </div>
       </div>
@@ -151,7 +158,7 @@ export const StudentsPage = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-border text-[11px] font-bold text-text-muted uppercase tracking-wider">
-                  <th className="pb-3 pl-2 w-16">Rasm</th>
+                  <th className="pb-3 pl-2 w-16">Profil</th>
                   <th className="pb-3">Ism Familiya</th>
                   <th className="pb-3">Telefon raqami</th>
                   <th className="pb-3">Tug‘ilgan sana</th>
@@ -162,19 +169,15 @@ export const StudentsPage = () => {
               </thead>
               <tbody className="divide-y divide-border/50 text-sm">
                 {students.map((student) => {
-                  const studentName = student.fullName || `${student.firstName} ${student.lastName || ''}`.trim();
+                  const studentName = student.fullName || `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'O‘quvchi';
                   return (
-                    <tr key={student.id} className="hover:bg-background/50 transition-colors group">
+                    <tr key={student.id} className={`hover:bg-background/50 transition-colors group ${!student.isActive ? 'opacity-65' : ''}`}>
                       <td className="py-3 pl-2">
+                        {/* 🛡️ Rasm o'rniga dinamik harfli chiroyli avatar */}
                         <img
-                          src={student.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=4361ee&color=fff&size=40`}
+                          src={`https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=4361ee&color=fff&size=40&bold=true`}
                           alt="avatar"
                           className="w-10 h-10 rounded-full object-cover border border-border shadow-sm"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null; 
-                            target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentName)}&background=random`;
-                          }}
                         />
                       </td>
                       <td className="py-3.5 font-semibold text-text-main">
@@ -228,7 +231,7 @@ export const StudentsPage = () => {
               </tbody>
             </table>
             
-            {/* Pagination boshqaruvi */}
+            {/* Pagination */}
             {meta.pages > 1 && (
               <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-border">
                 <button

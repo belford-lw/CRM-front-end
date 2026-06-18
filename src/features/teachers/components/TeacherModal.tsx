@@ -38,6 +38,17 @@ const initialFormState: TeacherFormState = {
   percentShare: '',
 };
 
+// 🌟 Raqamlarni 1,000,000 ko'rinishida formatlash uchun yordamchi funksiyalar
+const formatNumber = (val: string | number | null | undefined): string => {
+  if (!val && val !== 0) return '';
+  const cleanStr = String(val).replace(/\D/g, ''); // faqat raqamlarni qoldiramiz
+  return cleanStr.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // har 3ta raqamga vergul qo'yamiz
+};
+
+const parseNumber = (val: string): string => {
+  return val.replace(/,/g, ''); // backendga yuborish uchun vergullarni olib tashlaymiz
+};
+
 export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: TeacherModalProps) {
   const [formData, setFormData] = useState<TeacherFormState>(initialFormState);
   const [payScheme, setPayScheme] = useState<'salary' | 'percent'>('salary');
@@ -49,9 +60,10 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
         firstName: names[0] || '',
         lastName: names[1] || '',
         phone: editData.phone || '+998',
-        password: '', // Parol xavfsizlik uchun bo'sh qoldiriladi
+        password: '',
         photoUrl: editData.photoUrl || '',
-        monthlySalary: editData.monthlySalary !== null && editData.monthlySalary !== undefined ? String(editData.monthlySalary) : '',
+        // 🌟 Tahrirlash ochilganda kelgan oylikni vizual formatlaymiz
+        monthlySalary: editData.monthlySalary !== null && editData.monthlySalary !== undefined ? formatNumber(editData.monthlySalary) : '',
         percentShare: editData.percentShare !== null && editData.percentShare !== undefined ? String(editData.percentShare) : '',
       });
       setPayScheme(editData.monthlySalary ? 'salary' : 'percent');
@@ -66,8 +78,14 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    // Telefon raqam doim +998 bilan boshlanishini majburlash
     if (name === 'phone' && !value.startsWith('+998')) {
+      return;
+    }
+
+    // 🌟 Oylik yozilayotganda real vaqtda vergul qo'yib borish mantiqi
+    if (name === 'monthlySalary') {
+      const formatted = formatNumber(value);
+      setFormData(prev => ({ ...prev, [name]: formatted }));
       return;
     }
     
@@ -95,7 +113,8 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
 
     if (payScheme === 'salary') {
       if (!formData.monthlySalary) return alert("Oylik summasini kiriting");
-      payload.monthlySalary = String(formData.monthlySalary);
+      // 🌟 Backendga yuborishdan oldin vergullarni tozalab, toza raqam qilib yuboramiz
+      payload.monthlySalary = parseNumber(formData.monthlySalary);
       if (editData) payload.percentShare = null; 
     } else {
       if (!formData.percentShare) return alert("Foiz ulushini kiriting");
@@ -165,7 +184,8 @@ export default function TeacherModal({ isOpen, onClose, onSubmit, editData }: Te
             {payScheme === 'salary' ? (
               <div>
                 <label className="block text-[11px] font-medium text-text-muted mb-1">Oylik summasi (so'mda)</label>
-                <input required type="number" min="0" name="monthlySalary" value={formData.monthlySalary} onChange={handleInputChange} className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
+                {/* 🌟 Type textga o'zgardi va placeholder qo'yildi */}
+                <input required type="text" name="monthlySalary" value={formData.monthlySalary} onChange={handleInputChange} placeholder="1,500,000" className="w-full px-3 py-2 bg-background border border-border rounded-xl text-text-main text-xs focus:outline-none focus:border-[#4cc9f0] transition-all" />
               </div>
             ) : (
               <div>

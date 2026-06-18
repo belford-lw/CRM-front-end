@@ -104,8 +104,8 @@ export const LoginPage = () => {
       // O'zgarish: before:bg-[#0b132b]/80 yordamida rasmning yorqinligi pasaytirildi (qorong'uroq qilindi)
       className="min-h-screen flex items-center justify-center p-4 antialiased bg-cover bg-center bg-no-repeat relative before:absolute before:inset-0 before:bg-[#0b132b]/60"
       style={{ 
-        // O'quv markaz va zamonaviy dars xonasini ifodalovchi premium orqa fon rasmi
-        backgroundImage: `url('https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1920&auto=format&fit=crop')` 
+        // ALMASHTIRILGAN RASM: Zamonaviy o'quv markazi va o'quvchilarni aks ettiruvchi premium rasm
+        backgroundImage: `url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1920&auto=format&fit=crop')` 
       }}
     >
       
@@ -192,7 +192,7 @@ export const LoginPage = () => {
         {/* Tizim Osti Matni */}
         <div className="mt-8 text-center border-t border-white/10 pt-4">
           <span className="text-[10px] text-slate-300 font-semibold tracking-widest uppercase block">
-            Zarbdor Yo'ldoshev EduCenter © {new Date().getFullYear()}
+            Zarbdor Yo'ldoshev EduCenter CRM © {new Date().getFullYear()}
           </span>
         </div>
 
